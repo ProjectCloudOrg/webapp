@@ -1,5 +1,4 @@
-
-import unittest
+import pytest
 import sys
 import os
 
@@ -7,83 +6,56 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import assignments
 app = assignments.app
 
-class TestApp(unittest.TestCase):
+@pytest.fixture
+def client():
+    return app.test_client()
 
-    # endpoint healthz should return 200 blank body
-    def test_healthz(self):
-        tester = app.test_client(self)
-        response = tester.get('/healthz', content_type='application/json')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, b'')
-        self.assertEqual(response.headers['cache-control'], 'no-cache, no-store, must-revalidate')
+def test_healthz(client):
+    response = client.get('/healthz', content_type='application/json')
+    assert response.status_code == 200
+    assert response.data == b''
+    assert response.headers['cache-control'] == 'no-cache, no-store, must-revalidate'
 
-    # endpoint healthz with params should return 400 blank body
-    def test_healthzParams(self):
-        tester = app.test_client(self)
-        response = tester.get('/healthz?args=1', content_type='application/json')
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data, b'')
-        self.assertEqual(response.headers['cache-control'], 'no-cache, no-store, must-revalidate')
-    
-    # endpoint healthz with body should return 400 blank body
-    def test_healthzBody(self):
-        tester = app.test_client(self)
-        response = tester.get('/healthz', data='{ "name":"John"}', content_type='application/json')
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data, b'')
-        self.assertEqual(response.headers['cache-control'], 'no-cache, no-store, must-revalidate')
+def test_healthz_params(client):
+    response = client.get('/healthz?args=1', content_type='application/json')
+    assert response.status_code == 400
+    assert response.data == b''
+    assert response.headers['cache-control'] == 'no-cache, no-store, must-revalidate'
 
-    # endpoint healthz with params and body should return 400 blank body
-    def test_healthzBodyandParam(self):
-        tester = app.test_client(self)
-        response = tester.get('/healthz?args=10', data='{ "name":"John"}', content_type='application/json')
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data, b'')
-        self.assertEqual(response.headers['cache-control'], 'no-cache, no-store, must-revalidate')
-        
-    # endpoint other than healthz should return 404 blank body 
-    def test_healthx(self):
-        tester = app.test_client(self)
-        response = tester.get('/healthx', content_type='application/json')
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.data, b'')
-        self.assertEqual(response.headers['cache-control'], 'no-cache')
-        
-    # # endpoint healthz with database server down should return 503 blank body
-    # def test_healthz503(self):
-    #     tester = app.test_client(self)
-    #     response = tester.get('/healthz', content_type='application/json')
-    #     self.assertEqual(response.status_code, 503)
-    #     self.assertEqual(response.data, b'')
-    #     self.assertEqual(response.headers['cache-control'], 'no-cache, no-store, must-revalidate')
+def test_healthz_body(client):
+    response = client.get('/healthz', data='{ "name":"John"}', content_type='application/json')
+    assert response.status_code == 400
+    assert response.data == b''
+    assert response.headers['cache-control'] == 'no-cache, no-store, must-revalidate'
 
-    # endpoint healthz with post should return 405 blank body
-    def test_healthz_with_post(self):
-        tester = app.test_client(self)
-        response = tester.post('/healthz', content_type='application/json')
-        self.assertEqual(response.status_code, 405)
-        self.assertEqual(response.data, b'')
+def test_healthz_body_and_param(client):
+    response = client.get('/healthz?args=10', data='{ "name":"John"}', content_type='application/json')
+    assert response.status_code == 400
+    assert response.data == b''
+    assert response.headers['cache-control'] == 'no-cache, no-store, must-revalidate'
 
-    # endpoint healthz with put should return 405 blank body
-    def test_healthz_with_put(self):
-        tester = app.test_client(self)
-        response = tester.put('/healthz', content_type='application/json')
-        self.assertEqual(response.status_code, 405)
-        self.assertEqual(response.data, b'')
+def test_healthx(client):
+    response = client.get('/healthx', content_type='application/json')
+    assert response.status_code == 404
+    assert response.data == b''
+    assert response.headers['cache-control'] == 'no-cache'
 
-    # endpoint healthz with delete should return 405 blank body
-    def test_healthz_with_delete(self):
-        tester = app.test_client(self)
-        response = tester.delete('/healthz', content_type='application/json')
-        self.assertEqual(response.status_code, 405)
-        self.assertEqual(response.data, b'')
-    
-    # endpoint healthz with patch should return 405 blank body
-    def test_healthz_with_patch(self):
-        tester = app.test_client(self)
-        response = tester.patch('/healthz', content_type='application/json')
-        self.assertEqual(response.status_code, 405)
-        self.assertEqual(response.data, b'')
+def test_healthz_with_post(client):
+    response = client.post('/healthz', content_type='application/json')
+    assert response.status_code == 405
+    assert response.data == b''
 
-if __name__ == '__main__':
-    unittest.main()
+def test_healthz_with_put(client):
+    response = client.put('/healthz', content_type='application/json')
+    assert response.status_code == 405
+    assert response.data == b''
+
+def test_healthz_with_delete(client):
+    response = client.delete('/healthz', content_type='application/json')
+    assert response.status_code == 405
+    assert response.data == b''
+
+def test_healthz_with_patch(client):
+    response = client.patch('/healthz', content_type='application/json')
+    assert response.status_code == 405
+    assert response.data == b''
