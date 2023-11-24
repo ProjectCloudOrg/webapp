@@ -8,7 +8,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:Pranove*2@localhost:3306/assignmentdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost:3306/assignmentdb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 appHeaders = {'access-control-allow-credentials': 'true', 'access-control-allow-headers': 'X-Requested-With,Content-Type,Accept,Origin', 'access-control-allow-methods': '*', 'access-control-allow-origin': '*', 'cache-control': 'no-cache', 'content-enconding': 'gzip', 'content-type': 'application/json;charset=utf-8', 'etag' : 'W/"a9-N/X4JXf/69QQSQ1CLHMNPzj473I"', 'expires': '-1'} 
 appHeadersHealthZ = {'cache-control': 'no-cache, no-store, must-revalidate'}
