@@ -2,9 +2,24 @@ name: hello-world
 
 'on': pull_request
 jobs:
-  my-job:
+  integration-tests:
     runs-on: self-hosted
+
     steps:
-      - name: my-step
-        run: echo "Hello World"
-        
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        pip3 install -r requirements.txt
+      working-directory: webapp
+
+    - name: Run integration tests
+      run: |
+        python3 -m pytest
+      working-directory: webapp
+
+    - name: Final checks
+      run: |
+        # Add any additional checks or commands to verify the success of the tests
+      working-directory: webapp
