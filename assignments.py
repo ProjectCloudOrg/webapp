@@ -48,7 +48,7 @@ class Assignments(db.Model):
         self.username = username
 
 db.create_all()
-filepath = 'D:\\Cloud\\assignment\\webapp\\users.csv'
+filepath = './users.csv'
 with open(filepath, 'r') as csvFile:
         reader = csv.reader(csvFile)
         for row in reader:
