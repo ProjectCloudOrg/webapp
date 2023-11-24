@@ -1,16 +1,34 @@
-name : CI
+name: Integration Tests
 
 on:
   pull_request:
+    branches:
+      - main
 
 jobs:
-  run-tests:
+  integration-tests:
     runs-on: self-hosted
 
-    
     steps:
-      - name: Run tests
-        run: |
-          echo "Running tests"
-          pytest tests
-          echo "Tests passed"
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.10.12
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+      working-directory: webapp
+
+    - name: Run integration tests
+      run: |
+        python3 -m pytest
+      working-directory: webapp
+
+    - name: Final checks
+      run: |
+        # Add any additional checks or commands to verify the success of the tests
+      working-directory: webapp
